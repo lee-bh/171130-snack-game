@@ -1,0 +1,95 @@
+<!doctype html>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="normalize.css">
+	<style>
+		#gameArea{width:400px; height:263px; background: url('1.jpg'); position: absolute; left:calc(50% - 200px); top:100px;animation: bMove 4s linear;
+			animation-fill-mode: forwards;
+		}
+
+		@keyframes bMove{
+			0%{ background-position: 0 0px;}
+			100%{ background-position:-385px 0px;}
+		}
+		#gameStart{position: absolute;left:50%;top:120px;}
+		#arrow{width:50px; height:50px; border-radius: 50%;background: #0f0;left:calc(50% - 25px); position: absolute;top:200px; animation: aMove 1s cubic-bezier(.27,.53,.77,.49); animation-fill-mode: forwards;}
+
+		@keyframes aMove{
+			0%{}
+			15%{ top:60px; width:40px;}
+			100%{top:125px; width:10px; height:10px; left:calc(50% - 5px);}
+		}
+
+		#markT{ color:white; font-size: 2em; width:60px; height:60px; background: blue;left:50px;border-radius: 50%; text-align: center; line-height: 60px;border:3px solid white; box-shadow: 0px 0px 8px white; position: absolute;top:100px; transition: all 0.5s; }
+		#totalD{ width:40px; height:20px; background: black; opacity: 0.7 ;font-size:1em;text-align: center;color:white;}
+	</style>
+</head>
+<body>
+	<div id="gameArea">
+		<button id="gameStart">start</button>
+		<div id="arrow"></div>
+		<div id="markT"></div>
+		<div id="totalD"></div>
+	</div>
+
+	<script>
+		gameArea.style.animationPlayState = "paused";
+		arrow.style.animationPlayState = "paused";
+		arrow.style.display = "none";
+		markT.style.opacity = 0;
+		markT.style.display = "none";
+
+		var t;
+		var time = 0;
+		var mark = 0;
+		var total = 0;
+
+
+		gameStart.onclick = function(){
+			
+			gameArea.style.animationPlayState = "running";
+			gameStart.style.display = "none";
+			arrow.style.display = "block";
+			arrow.style.animationPlayState = "paused";
+			t = setInterval(calMark,50);
+		}
+		
+		arrow.onclick = function(){
+			arrow.style.animationPlayState = "running";
+		}
+		
+		arrow.addEventListener("animationend",checkMark);
+		
+		function checkMark(){
+			gameArea.style.animationPlayState = "paused";
+			mark = 10 - Math.abs(parseInt((66 - time)/2));
+			console.log(mark);
+			markT.innerHTML = mark;
+			markT.style.display = "block";
+			markT.style.opacity = 1;
+
+			total+= mark; mark = 0;
+			totalD.innerHTML = total;
+			clearInterval(t); time = 0;
+			setTimeout(function(){
+				rewindAnimation(arrow);
+  				arrow.style.animationPlayState = "paused";
+
+  				rewindAnimation(gameArea);
+  				gameArea.style.animationPlayState = "running"; 
+  				t = setInterval(calMark,50);
+			},1000);
+		}
+
+		function rewindAnimation(t){
+			t.style.animationFillMode = "backwards";
+			t.style.animation = 'none';
+  			t.offsetHeight; 
+  			t.style.animation = null;
+		}
+
+		function calMark(){
+			time+=1;
+		}
+	</script>
+</body>
